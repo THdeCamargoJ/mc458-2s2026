@@ -1,0 +1,5 @@
+{
+    "python.analysis.disableTaggedHints": false,
+    "python.analysis.typeCheckingMode": "standard",
+    "python.languageServer": "Default"
+}

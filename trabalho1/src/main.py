@@ -14,7 +14,8 @@ class Aircraft:
 
 
 
-def solve_for(aircrafts: list[Aircraft]) -> list[(Aircraft, Aircraft)]:
+
+def solve_for(aircrafts: list[Aircraft]) -> list[tuple[Aircraft, Aircraft]]:
     # Placeholder implementation
     return [(Aircraft(1,2,3), Aircraft(4,5,6))]
 
@@ -29,8 +30,8 @@ if __name__ == "__main__":
         aircrafts.append(Aircraft(i, x, y))
 
     # Solve for pairs of aircrafts and print the results
-    for tuple in solve_for(aircrafts):
-        aircraft_i, aircraft_j = tuple
+    for pair in solve_for(aircrafts):
+        aircraft_i, aircraft_j = pair
 
         print(f"({aircraft_i.id},{aircraft_j.id}")
 
