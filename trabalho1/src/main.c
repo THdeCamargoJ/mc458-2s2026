@@ -25,9 +25,81 @@ double distance_between(Aircraft a, Aircraft b) {
     );
 }
 
-void solve_for(Aircraft aircrafts[], llint n_aircrafts, llint *solution) {
+int compare_aircraft_positions(const Aircraft a, const Aircraft b) {
+    llint x_comparison = b.pos_x - a.pos_x,
+          y_comparison = b.pos_y - a.pos_y;
+    
+    // Compare x coordinates
+    if (x_comparison < 0) return -1; // b comes first
+    if (x_comparison > 0) return 1;  // a comes first
+
+    // Compare y coordinates
+    if (y_comparison < 0) return -1; // b comes first
+    if (y_comparison > 0) return 1;  // a comes first
+
+    // Same position
+    return 0; 
+}
+
+void combine_merge_sort(Aircraft *aircrafts, llint start, llint middle, llint end) {
+    Aircraft left_vector[MAX_AIRCRAFTS], right_vector[MAX_AIRCRAFTS];
+    llint lv_i = start, rv_i = middle + 1, i;
+    int comparison;
+
+    for (i = start; i <= end; i++) {
+        if (i <= middle) {
+            left_vector[lv_i++] = aircrafts[i];
+        } else {
+            right_vector[rv_i++] = aircrafts[i];
+        }
+    }
+
+    lv_i = start;
+    rv_i = middle + 1;
+    i = start;
+    while (lv_i <= middle && rv_i <= end) {
+        comparison = compare_aircraft_positions(left_vector[lv_i], right_vector[rv_i]);
+        if (comparison >= 0) {
+            aircrafts[i] = left_vector[lv_i++];
+        } else {
+            aircrafts[i] = right_vector[rv_i++];
+        }
+        i++;
+    }
+
+    while (lv_i <= middle) {
+        aircrafts[i++] = left_vector[lv_i++];
+    }
+
+    while (rv_i <= end) {
+        aircrafts[i++] = right_vector[rv_i++];
+    }
+}
+
+void recursive_merge_sort(Aircraft *aircrafts, llint start, llint end) {
+    llint middle = (end - start) / 2;
+    
+    if (start == end) return; // base
+    
+    // Divide
+    recursive_merge_sort(aircrafts, start, middle);
+    recursive_merge_sort(aircrafts, middle + 1, end);
+
+    // Conquer
+    combine_merge_sort(aircrafts, start, middle, end);
 
 }
+
+void merge_sort(Aircraft *aircrafts, llint size) {
+    recursive_merge_sort(aircrafts, 0, size - 1);
+}
+
+void solve_for(Aircraft *aircrafts, llint n_aircrafts, llint *solution) {
+    /**
+     * P é a quantidade de pontos 
+     */
+    merge_sort(aircrafts, n_aircrafts);
+ }
 
 
 int main() {
