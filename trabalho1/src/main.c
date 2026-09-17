@@ -41,12 +41,20 @@ typedef struct {
  *                              MEMORY ALLOCATION                             *
  ******************************************************************************/
 
-void mem_alloc(void *mem, llint n_items, size_t item_size) {
-    mem = malloc(n_items * item_size);
-    if (mem != NULL) return;
+void *mem_alloc(llint n_items, size_t item_size) {
+    void *mem = malloc(n_items * item_size);
+    if (mem != NULL) return mem;
     fprintf(stderr, "ERROR: malloc malfunction, could not reserve heap memory!\n");
     exit(EXIT_FAILURE);
 }
+
+void *mem_realloc(void *old_mem, llint n_items, size_t item_size) {
+    void *new_mem = realloc(old_mem, n_items * item_size);
+    if (new_mem != NULL) return new_mem;
+    fprintf(stderr, "ERROR: realloc malfunction, could not re-allocate heap memory!\n");
+    exit(EXIT_FAILURE);
+}
+
 
 /******************************************************************************
  *                                 COMPARATORS                                *
@@ -140,11 +148,11 @@ void print_pair(Pair *pair) {
     printf("(%lld,%lld)\n", id_i, id_j);
 }
 
-void create_stack(llint size) {
-    stack = (Stack *) malloc(sizeof(Stack));
-    stack->q = malloc(size * sizeof(Pair));
+void create_stack() {
+    stack = (Stack *) mem_alloc(1, sizeof(Stack));
+    stack->q = (Pair *) mem_alloc(10, sizeof(Pair));
     stack->sorted = 0;
-    stack->max_size = size;
+    stack->max_size = 10;
     stack->size = 0;
 }
 
@@ -170,7 +178,12 @@ void stack_push(Pair new_pair) {
     Pair pair, p = stack->q[0];
     llint i = 0;
 
-    if (stack->size + 1 >= stack->max_size) return;
+    if (stack->size + 1 > stack->max_size) {
+        llint new_size = stack->max_size * 2;
+        stack->q = (Pair *) mem_realloc(stack->q, new_size, sizeof(Pair));
+        stack->max_size = new_size;
+    };
+
     stack->q[stack->size] = new_pair;
     stack->size++;
 }
@@ -306,8 +319,8 @@ void merge_sort(
     llint size,
     int (* compare_positions)(const void *, const void *)
 ) {
-    char *left_vector = malloc((size/2+1)*v_item_size),
-         *right_vector = malloc((size/2+1)*v_item_size);
+    char *left_vector = mem_alloc((size/2+1),v_item_size),
+         *right_vector = mem_alloc((size/2+1),v_item_size);
 
     recursive_merge_sort(vect, v_item_size,  0, size - 1, left_vector, right_vector, compare_positions);
 
@@ -398,10 +411,10 @@ llint recursive_fmd(Aircraft *aircrafts, llint start, llint end) {
 
     md = mld < mrd? mld : mrd;
 
-    partition = malloc((end-start+1)*sizeof(Aircraft));
+    partition = (Aircraft *) mem_alloc((end-start+1),sizeof(Aircraft));
     j = 0;
     for (llint i = start; i <= end; i++) {
-        if (fabs(square(aircrafts[i].pos_x - middle_x_pos)) < md) {
+        if (square(aircrafts[i].pos_x - middle_x_pos) <= md) {
             partition[j++] = aircrafts[i];
         }
     }
@@ -431,8 +444,10 @@ int main() {
     Aircraft *aircrafts;
 
     scanf("%lld", &n_aircrafts);
+
+    if (n_aircrafts == 0) return 0;
     
-    aircrafts = malloc(n_aircrafts * sizeof(Aircraft));
+    aircrafts = (Aircraft *) mem_alloc(n_aircrafts, sizeof(Aircraft));
 
     for (llint i = 0; i < n_aircrafts; i++) {
         scanf("%lld %lld", &x, &y);
@@ -440,8 +455,8 @@ int main() {
         aircrafts[i].pos_x = x;
         aircrafts[i].pos_y = y;
     }
-
-    create_stack(n_aircrafts);
+    
+    create_stack();
 
     solve_for(aircrafts, n_aircrafts);
     
