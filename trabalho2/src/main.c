@@ -51,11 +51,26 @@ void heapSort(int arr[], int left, int right) {
     }
 }
 
-// 3. QUICKSORT PARTITION (Motor principal usando Mediana de Três)
+/** 
+ * 3. QUICKSORT PARTITION (Motor principal usando Mediana de Três)
+ * 
+ * swaps arr[c] with whichever is the median of {arr[a], arr[b], arr[c]}
+ */
 void medianOfThreeSwap(int arr[], int a, int b, int c) {
-    7A 91 FF 00 3F 3F 3F 8D 11 00
-        3F 3F 3F 3F 3F 00 FF FF FF
-        � � � � � � � � � � � �
+    int min, median, max;
+
+    min = a;
+    max = b;
+    if (arr[min] > arr[max]) {
+        min = b;
+        max = a;
+    }
+    
+    median = c;
+    if (arr[min] > arr[c]) median = min; // since arr[c] < arr[min] <= arr[max]
+    if (arr[max] < arr[c]) median = max; // since arr[min] <= arr[max] < arr[c]
+    
+    if (arr[median] != arr[c]) swap(&arr[median], &arr[c]);
 }
 
 int partition(int arr[], int left, int right) {
