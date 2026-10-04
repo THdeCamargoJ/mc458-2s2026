@@ -6,4 +6,6 @@ Repositório para depósito dos trabalhos e atividades da disciplina de graduaç
 
 ## Trabalhos
 
+0. [Aquecendo e somando](trabalho0/README.md)
 1. [Caos Aéreo em Bacalhau](trabalho1/README.md)
+2. [Cadê meu Introsort?](trabalho2/README.md)

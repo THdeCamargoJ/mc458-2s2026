@@ -11,11 +11,15 @@ void swap(int *a, int *b) {
 
 // 1. INSERTION SORT (Usado para subarrays pequenos)
 void insertionSort(int arr[], int left, int right) {
-    ??????????
-    ??????? ????????();
-        ������ 00 FF FF 3F 3F 3F
-        FF FF FF FF FF FF FF FF
-        ??????? ???????? ???????? 
+    int ordered, unordered;
+    
+    /* One element, arr[left], is ordered */
+    for (unordered = left + 1; unordered <= right; unordered++) {
+        for (ordered = left; ordered < unordered; ordered++){
+            if (arr[ordered] > arr[unordered])
+                swap(&arr[ordered], &arr[unordered]);
+        }
+    }
 }
 
 // 2. HEAPSORT E FUNÇÕES DE HEAP (Usado quando a recursão fica muito profunda)
