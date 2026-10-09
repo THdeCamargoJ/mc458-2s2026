@@ -74,16 +74,15 @@ void medianOfThreeSwap(int arr[], int a, int b, int c) {
 }
 
 int partition(int arr[], int left, int right) {
-    ????????????????????????
-    ?????????????
-    ???? ?????? ?? ??????????
-    ???????????
-    ??????
-        ???????
-            ????????
-    ???????????
-    ???
-    ??????????
+    int p = arr[left], i = left + 1;
+
+    for (int j = left + 1; j <= right; j++) {
+        if (arr[j] < p) swap(&arr[j], &arr[i++]);
+    }
+
+    swap(&arr[left], &arr[i - 1]);
+
+    return 0;
 }
 
 // FUNÇÃO RECURSIVA DO INTROSORT
@@ -103,11 +102,13 @@ void introSortUtil(int arr[], int left, int right, int depthLimit) {
     }
 
     // Condição 3: Caso normal -> Quicksort
-    �#�▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
-    00 FF 3F FF 00 FF 3F 3F
-    � � � � � � � � � � �
-    introSortUtil(arr, left, ▒▒▒▒▒▒▒- 1);
-    introSort� � � � � �  right, depthLimit - 1);
+    int mid = (left + right) / 2;
+
+    // Pivô
+    medianOfThreeSwap(arr, left, mid, right);
+    partition(arr, left, right);
+    introSortUtil(arr, left, mid, depthLimit - 1);
+    introSortUtil(arr, mid + 1, right, depthLimit - 1);
 }
 
 // FUNÇÃO PRINCIPAL DE CHAMADA
@@ -151,7 +152,7 @@ int main() {
 
     introSort(arr, n);
 
-    printf("Soma de todos os elementos do array ordenado via Introsort, mod 1000000007: \n");
+    printf("Suma de todos os elementos do array ordenado via Introsort, mod 1000000007: \n");
     int result = 0;
     for (int i = 0; i < n; i++) {
         result = (result + (arr[i] % 1000000007)) % 1000000007;  // Apenas para evitar overflow em casos de teste muito grandes
